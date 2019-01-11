@@ -35,7 +35,7 @@ public class LoginCtrl {
         //1.获取Subject
         Subject subject = SecurityUtils.getSubject();
         //2.封装用户数据
-        UsernamePasswordToken token = new UsernamePasswordToken(name,password                                                );
+        UsernamePasswordToken token = new UsernamePasswordToken(name,password);
         //3.执行登录方法,有异常登录失败
 
         try {
@@ -77,5 +77,9 @@ public class LoginCtrl {
 
         return "unauth";
     }
+    @RequestMapping("/doRegister")
+    public String register(){
 
+        return "login";
+    }
 }

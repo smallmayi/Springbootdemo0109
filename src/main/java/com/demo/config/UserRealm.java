@@ -9,6 +9,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserRealm extends AuthorizingRealm {
@@ -37,13 +38,36 @@ public class UserRealm extends AuthorizingRealm {
         //shiro判断逻辑
         //1.判断用户名
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+        String tname = token.getUsername();
+        String tpassword =new String(token.getPassword());
+        System.out.println("tname:"+tname+"tpass"+tpassword);
         Teacher login = tInter.login(token.getUsername());
-        //System.out.println(login.getName()+"--"+login.getPassword());
-        //if ((login == null)||!token.getUsername().equals(login.getName())){
+        System.out.println(login.toString());
         if ((login == null)){
             return null;
         }
         //principal授权时使用
-       return new SimpleAuthenticationInfo(login,login.getPassword(),"");
+      // return new SimpleAuthenticationInfo(login,login.getPassword(),"");
+        // 认证的实体信息，可以是username，也可以是用户的实体类对象，这里用的用户名
+        //Object principal = token.getUsername();
+        //System.out.println(token.getUsername()+"----"+token.getPassword());
+        // 从数据库中查询的密码
+        //Object credentials = login.getPassword();
+        System.out.println("数据库密码："+login.getPassword());
+        // 颜值加密的颜，可以用用户名
+        ByteSource salt = ByteSource.Util.bytes(token.getUsername());
+        // 当前realm对象的名称，调用分类的getName()
+        String realmName = getName();
+        System.out.println(realmName.toString());
+        // 创建SimpleAuthenticationInfo对象，并且把username和password等信息封装到里面
+        // 用户密码的比对是Shiro帮我们完成的
+        SimpleAuthenticationInfo info = null;
+       // info = new SimpleAuthenticationInfo(principal, credentials, credentialsSalt, realmName);
+       info = new SimpleAuthenticationInfo(login, login.getPassword(),salt, realmName);
+
+        return info;
+
+
     }
+
 }
