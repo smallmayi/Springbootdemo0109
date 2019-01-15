@@ -3,6 +3,8 @@ package com.demo.service.Impl;
 import com.demo.domain.Teacher;
 import com.demo.mapper.TeacherMapper;
 import com.demo.service.Inter.TeacherInter;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +30,15 @@ public class TeacherImpl implements TeacherInter {
     public Teacher perms(int id) {
         Teacher teacher = tMapper.perms(id);
         return teacher;
+    }
+
+    @Override
+    public void register(String name, String password) {
+        Teacher teacher = new Teacher();
+        teacher.setName(name);
+        System.out.println(name + "---" + password);
+        String md5 = new SimpleHash("MD5", password, ByteSource.Util.bytes(name), 1024).toHex();
+        teacher.setPassword(md5);
+        tMapper.add(teacher);
     }
 }

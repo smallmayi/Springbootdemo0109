@@ -8,4 +8,5 @@ public interface TeacherInter {
     List<Teacher> findAll();
     Teacher login(String name);
     Teacher perms(int id);
+    void register(String name,String password);
 }

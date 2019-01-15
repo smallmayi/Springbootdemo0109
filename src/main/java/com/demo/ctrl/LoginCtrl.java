@@ -2,7 +2,6 @@ package com.demo.ctrl;
 
 import com.demo.service.Inter.TeacherInter;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginCtrl {
@@ -30,7 +28,7 @@ public class LoginCtrl {
         return "info is error";
     }*/
     @RequestMapping("/login")
-    public String login(@RequestParam("name") String name,@RequestParam("password") String password, Model model){
+    public String login( String name,String password, Model model){
         System.out.println("name"+name);
         //使用Shrio编写认证操作
         //1.获取Subject
@@ -73,15 +71,20 @@ public class LoginCtrl {
         return "login";
     }
 
+    //未授权页面
     @RequestMapping("/unAuth")
     public String unAuth(Model model){
 
         return "unauth";
     }
+    //注册页面
     @RequestMapping("/register")
-    public String register(String name,String password){
-
-
+    public String register(){
+        return "registerPage";
+    }
+    @RequestMapping("/doRegister")
+    public String doRegister(String name,String password){
+        tInter.register(name,password);
         return "login";
     }
 }

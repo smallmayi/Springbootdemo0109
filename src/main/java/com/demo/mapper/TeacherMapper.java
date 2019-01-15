@@ -36,6 +36,6 @@ public interface TeacherMapper {
     Teacher perms( int id);
 
     @Insert("insert into teacher (t_name,t_password) values(#{name},#{password});")
-    Teacher add( int id);
+    int add(Teacher teacher);
 
 }

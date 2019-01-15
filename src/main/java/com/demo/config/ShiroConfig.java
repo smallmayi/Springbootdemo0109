@@ -3,14 +3,11 @@ package com.demo.config;
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.session.mgt.SessionManager;
-import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -39,7 +36,8 @@ public class ShiroConfig {
         filterMap.put("/update","authc");*/
         filterMap.put("/test","anon");
         filterMap.put("/login","anon");
-
+        filterMap.put("/doRegister","anon");
+        filterMap.put("/register","anon");
         //授权过滤器
         //当前授权拦截和，shiro自动跳转到未授权页面
         filterMap.put("/add","perms[user:add]");
