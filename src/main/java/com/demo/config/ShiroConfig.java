@@ -32,8 +32,6 @@ public class ShiroConfig {
         *
         * */
         Map<String,String> filterMap = new LinkedHashMap<>();
-        /*filterMap.put("/add","authc");
-        filterMap.put("/update","authc");*/
         filterMap.put("/test","anon");
         filterMap.put("/login","anon");
         filterMap.put("/doRegister","anon");
@@ -91,14 +89,6 @@ public class ShiroConfig {
         return hashedCredentialsMatcher;
     }
 
-/*    @Bean
-    public UserRealm userRealm() {
-        UserRealm userRealm = new UserRealm();
-        //告诉realm,使用credentialsMatcher加密算法类来验证密文
-        userRealm.setCredentialsMatcher(hashedCredentialsMatcher());
-        userRealm.setCachingEnabled(false);
-        return userRealm;
-    }*/
     /**
      * 身份认证 realm
      */
