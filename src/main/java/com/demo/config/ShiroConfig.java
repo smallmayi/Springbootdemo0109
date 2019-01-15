@@ -3,8 +3,11 @@ package com.demo.config;
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,12 +55,35 @@ public class ShiroConfig {
 
         return shiroFilterFactoryBean;
     }
+
+    //
+    // 配置sessionDAO
+    @Bean(name="sessionDAO")
+    public MemorySessionDAO getMemorySessionDAO(){
+        MemorySessionDAO sessionDAO = new MemorySessionDAO();
+        return sessionDAO;
+    }
+
+    //配置shiro session 的一个管理器
+    @Bean(name = "sessionManager")
+    public DefaultWebSessionManager getDefaultWebSessionManager(){
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        // 设置session过期时间
+        sessionManager.setGlobalSessionTimeout(60*60*1000);
+        // 请注意看代码
+        sessionManager.setSessionDAO(getMemorySessionDAO());
+        return sessionManager;
+    }
+
+    //
     //创建DefaultWebSecurityManager
     @Bean("securityManager")
     public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("userRealm") UserRealm userRealm){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         //关联Realm
         securityManager.setRealm(userRealm);
+        //
+        securityManager.setSessionManager( getDefaultWebSessionManager() );
         return securityManager;
     }
     //创建Realm

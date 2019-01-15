@@ -7,16 +7,24 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
+
+import java.util.Collection;
 
 public class UserRealm extends AuthorizingRealm {
     @Autowired
     TeacherInter tInter;
 
+    @Autowired
+    private SessionDAO sessionDAO;
     //执行授权逻辑
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
@@ -42,24 +50,45 @@ public class UserRealm extends AuthorizingRealm {
         //1.判断用户名
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         String tname = token.getUsername();
+        //String password = new String((char[])authenticationToken.getCredentials());
         String tpassword = String.valueOf(token.getPassword());
         Teacher login = tInter.login(tname);
+
+        //
+
+        //
         if (login == null) {
             return null;
-        } else {
-            //String credentials = new Sha512Hash(tpassword, tname).toString();
+        }
             String md5 = new SimpleHash("MD5", tpassword, ByteSource.Util.bytes(tname), 1024).toHex();
             token.setPassword(md5.toCharArray());
             System.out.println("cred:"+md5);
-           // return new SimpleAuthenticationInfo(tname,tpassword, getName());
+          //
+        if( tname.equals( login.getName() ) && token.getPassword().equals( login.getPassword() ) ){
+            // 获取所有session
+            Collection<Session> sessions = sessionDAO.getActiveSessions();
+            for (Session session: sessions) {
+                Teacher sysUser = (Teacher) session.getAttribute("USER_SESSION");
+                // 如果session里面有当前登陆的，则证明是重复登陆的，则将其剔除
+                if( sysUser!=null ){
+                    if( tname.equals( sysUser.getName() ) ){
+                        session.setTimeout(0);
+                    }
+                }
+            }
+        }
+
+        //
             SimpleAuthenticationInfo info = null;
             // info = new SimpleAuthenticationInfo(principal, credentials, credentialsSalt, realmName);
             String realname = getName();
-            // 颜值加密的颜，可以用用户名
+            // 盐值加密，可以用用户名
             ByteSource salt = ByteSource.Util.bytes(tname);
             info = new SimpleAuthenticationInfo(login,login.getPassword(),salt, realname);
+        Session session = SecurityUtils.getSubject().getSession();
+        session.setAttribute("USER_SESSION", login);
             return info;
-        }
+
 
 
     }

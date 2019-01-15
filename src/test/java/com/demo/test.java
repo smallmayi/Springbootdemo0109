@@ -21,5 +21,6 @@ public class test {
         String s = "字符串数组";
         System.out.println(ch.equals(s));
 
+
     }
 }
