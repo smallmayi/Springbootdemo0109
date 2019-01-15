@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginCtrl {
@@ -29,7 +30,7 @@ public class LoginCtrl {
         return "info is error";
     }*/
     @RequestMapping("/login")
-    public String login(String name,String password,Model model){
+    public String login(@RequestParam("name") String name,@RequestParam("password") String password, Model model){
         System.out.println("name"+name);
         //使用Shrio编写认证操作
         //1.获取Subject
@@ -77,8 +78,9 @@ public class LoginCtrl {
 
         return "unauth";
     }
-    @RequestMapping("/doRegister")
-    public String register(){
+    @RequestMapping("/register")
+    public String register(String name,String password){
+
 
         return "login";
     }

@@ -2,11 +2,15 @@ package com.demo.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -79,16 +83,6 @@ public class ShiroConfig {
      * 这个类也负责对form里输入的密码进行编码
      * 处理认证匹配处理器：如果自定义需要实现继承HashedCredentialsMatcher
      */
- /*   @Bean("hashedCredentialsMatcher")
-    public HashedCredentialsMatcher hashedCredentialsMatcher() {
-        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
-        //指定加密方式为MD5
-        credentialsMatcher.setHashAlgorithmName("MD5");
-        //加密次数
-        credentialsMatcher.setHashIterations(1024);
-        credentialsMatcher.setStoredCredentialsHexEncoded(true);
-        return credentialsMatcher;
-    }*/
 
     @Bean("hashedCredentialsMatcher")
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
@@ -111,19 +105,19 @@ public class ShiroConfig {
      * 身份认证 realm
      */
     @Bean("myShiroRealm")
-    public UserRealm myShiroRealm(HashedCredentialsMatcher matcher){
+    public UserRealm myShiroRealm(){
         UserRealm myShiroRealm = new UserRealm();
-        myShiroRealm.setCredentialsMatcher(matcher);
+        myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         System.out.println("myShiroRealm 注入成功");
         return myShiroRealm;
     }
 
     @Bean
-    public DefaultWebSecurityManager securityManager(@Qualifier("hashedCredentialsMatcher") HashedCredentialsMatcher matcher) {
+    public DefaultSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 注入自定义的realm;
-        securityManager.setRealm(myShiroRealm(matcher));
-
+        securityManager.setRealm(myShiroRealm());
+        System.out.println("注入securtyManager");
         // 注入缓存管理器;
         //securityManager.setCacheManager(ehCacheManager());
 

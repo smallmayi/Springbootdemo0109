@@ -34,4 +34,8 @@ public interface TeacherMapper {
 
     @Select("Select id,perms from teacher t where id = #{id}")
     Teacher perms( int id);
+
+    @Insert("insert into teacher (t_name,t_password) values(#{name},#{password});")
+    Teacher add( int id);
+
 }
