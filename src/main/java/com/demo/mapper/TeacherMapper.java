@@ -16,7 +16,7 @@ public interface TeacherMapper {
     })
     List<Teacher> findAll();
 
-    @Select("Select id,t_name,t_password from teacher t where t.t_name = #{name}")
+    @Select("Select * from teacher t where t.t_name = #{name}")
     @Results({
             @Result(column = "t_name",property = "name"),
             @Result(column = "t_password",property = "password")

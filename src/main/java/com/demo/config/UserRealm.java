@@ -1,6 +1,10 @@
 package com.demo.config;
 
+import com.demo.domain.Perms;
+import com.demo.domain.Role;
 import com.demo.domain.Teacher;
+import com.demo.mapper.PermsMapper;
+import com.demo.mapper.RoleMapper;
 import com.demo.service.Inter.TeacherInter;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -15,11 +19,17 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class UserRealm extends AuthorizingRealm {
     @Autowired
     TeacherInter tInter;
+    @Autowired
+    RoleMapper rMapper;
+    @Autowired
+    PermsMapper pMapper;
 
     @Autowired
     private SessionDAO sessionDAO;
@@ -27,7 +37,7 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("执行授权");
-        //给资源执行授权
+      /*  //给资源执行授权
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         //info.addStringPermission("user:add");
         //从数据库获取授权字符串
@@ -37,7 +47,20 @@ public class UserRealm extends AuthorizingRealm {
         //Object principal = subject.getPrincipal();
         Teacher perms = tInter.perms(principal.getId());
         info.addStringPermission(perms.getPerms());
-        return info;
+        return info;*/
+        Teacher teacher = (Teacher) principalCollection.getPrimaryPrincipal();
+        if (teacher != null) {
+            //权限信息对象info,用来存放查出的用户的所有的角色（role）及权限（permission）
+            SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+            //用户的角色集合
+            info.addRoles(teacher.getRoleStrlist());
+            //用户的权限集合
+            info.addStringPermissions(teacher.getPerminsStrlist());
+
+            return info;
+        }
+        // 返回null的话，就会导致任何用户访问被拦截的请求时，都会自动跳转到unauthorizedUrl指定的地址
+        return null;
     }
 
     //执行认证逻辑
@@ -61,6 +84,21 @@ public class UserRealm extends AuthorizingRealm {
             String md5 = new SimpleHash("MD5", tpassword, ByteSource.Util.bytes(tname), 1024).toHex();
             token.setPassword(md5.toCharArray());
             System.out.println("cred:"+md5);
+            //
+        List<Role> rlist = rMapper.roleList(login.getRid());//获取用户角色
+        List<Perms> plist = pMapper.permList(login.getRid());//获取用户权限
+        List<String> roleStrlist=new ArrayList<>();////用户的角色集合
+        List<String> perminsStrlist=new ArrayList<>();//用户的权限集合
+        for (Role role : rlist) {
+            roleStrlist.add(role.getRole_name());
+        }
+        for (Perms uPermission : plist) {
+            perminsStrlist.add(uPermission.getPerm());
+        }
+        login.setRoleStrlist(roleStrlist);
+        login.setPerminsStrlist(perminsStrlist);
+            //
+
           //禁止同时登陆
         if( tname.equals( login.getName() ) && md5.equals( login.getPassword() ) ){
             // 获取所有session

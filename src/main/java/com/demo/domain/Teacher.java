@@ -1,18 +1,17 @@
 package com.demo.domain;
 
+import java.util.List;
+
 public class Teacher {
     private Integer id;
     private String name;
     private String password;
-    private String perms;
+    private int rid;
 
-    public String getPerms() {
-        return perms;
-    }
+    private List<String> roleStrlist;
+ 	private List<String> perminsStrlist;
 
-    public void setPerms(String perms) {
-        this.perms = perms;
-    }
+
 
     public Integer getId() {
         return id;
@@ -34,6 +33,30 @@ public class Teacher {
         return password;
     }
 
+    public int getRid() {
+        return rid;
+    }
+
+    public void setRid(int rid) {
+        this.rid = rid;
+    }
+
+    public List<String> getRoleStrlist() {
+        return roleStrlist;
+    }
+
+    public void setRoleStrlist(List<String> roleStrlist) {
+        this.roleStrlist = roleStrlist;
+    }
+
+    public List<String> getPerminsStrlist() {
+        return perminsStrlist;
+    }
+
+    public void setPerminsStrlist(List<String> perminsStrlist) {
+        this.perminsStrlist = perminsStrlist;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -44,7 +67,7 @@ public class Teacher {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", perms='" + perms + '\'' +
+                ", rid=" + rid +
                 '}';
     }
 }
