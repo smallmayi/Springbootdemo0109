@@ -68,6 +68,7 @@ public class UserRealm extends AuthorizingRealm {
             for (Session session: sessions) {
                 Teacher sysUser = (Teacher) session.getAttribute("USER_SESSION");
                 // 如果session里面有当前登陆的，则证明是重复登陆的，则将其剔除
+                System.out.println("seesion:"+session.getId());
                 if( sysUser!=null ){
                     if( tname.equals( sysUser.getName() ) ){
                         session.setTimeout(0);

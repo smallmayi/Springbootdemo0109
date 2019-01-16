@@ -72,6 +72,8 @@ public class ShiroConfig {
         sessionManager.setGlobalSessionTimeout(60*60*1000);
         // 请注意看代码
         sessionManager.setSessionDAO(getMemorySessionDAO());
+        //解决url携带jessionid问题
+        sessionManager.setSessionIdUrlRewritingEnabled(false);
         return sessionManager;
     }
 
