@@ -56,24 +56,24 @@ public class LoginCtrl {
         return "test";
     }
     @RequestMapping("/add")
-    public String add(Model model){
+    public String add(){
 
         return "/user/add";
     }
     @RequestMapping("/update")
-    public String update(Model model){
+    public String update(){
 
         return "/user/update";
     }
     @RequestMapping("/toLogin")
-    public String toLogin(Model model){
+    public String toLogin(){
 
         return "login";
     }
 
     //未授权页面
     @RequestMapping("/unAuth")
-    public String unAuth(Model model){
+    public String unAuth(){
 
         return "unauth";
     }
