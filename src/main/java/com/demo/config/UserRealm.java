@@ -7,15 +7,13 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.crypto.hash.SimpleHash;
-import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
-import org.apache.shiro.session.mgt.DefaultSessionManager;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.shiro.session.mgt.eis.SessionDAO;
 
 import java.util.Collection;
 
@@ -63,8 +61,8 @@ public class UserRealm extends AuthorizingRealm {
             String md5 = new SimpleHash("MD5", tpassword, ByteSource.Util.bytes(tname), 1024).toHex();
             token.setPassword(md5.toCharArray());
             System.out.println("cred:"+md5);
-          //
-        if( tname.equals( login.getName() ) && token.getPassword().equals( login.getPassword() ) ){
+          //禁止同时登陆
+        if( tname.equals( login.getName() ) && md5.equals( login.getPassword() ) ){
             // 获取所有session
             Collection<Session> sessions = sessionDAO.getActiveSessions();
             for (Session session: sessions) {

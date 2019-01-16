@@ -18,8 +18,9 @@ public class test {
         Object result = new SimpleHash("MD5","123456",ByteSource.Util.bytes("李四"),1024);
         System.out.println(result);
         char[] ch=new char[]{'字', '符', '串', '数', '组'};
+        String c = new String(ch);
         String s = "字符串数组";
-        System.out.println(ch.equals(s));
+        System.out.println(c.equals(s));
 
 
     }
