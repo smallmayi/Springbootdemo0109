@@ -15,18 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LoginCtrl {
    @Autowired
    TeacherInter tInter;
-    /*@RequestMapping(value = "/login",method = RequestMethod.POST)
-    public String login( @RequestBody  Teacher teacher){
-        String name = teacher.getName();
-        String password = teacher.getPassword();
-        System.out.println("name:"+name+"--"+"password:"+password);
-        boolean flag = tInter.login(name,password);
-        if (flag){
-            System.out.println("success");
-            return "login success";
-        }
-        return "info is error";
-    }*/
+
+
     @RequestMapping("/login")
     public String login( String name,String password, Model model){
         System.out.println("name"+name);
@@ -85,6 +75,12 @@ public class LoginCtrl {
     @RequestMapping("/doRegister")
     public String doRegister(String name,String password){
         tInter.register(name,password);
+        return "login";
+    }
+    @RequestMapping("/logout")
+    public String logout(){
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
         return "login";
     }
 }

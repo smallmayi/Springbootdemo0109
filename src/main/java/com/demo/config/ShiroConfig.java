@@ -2,7 +2,6 @@ package com.demo.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -55,28 +54,7 @@ public class ShiroConfig {
         return shiroFilterFactoryBean;
     }
 
-    //
-    // 配置sessionDAO
-    @Bean(name="sessionDAO")
-    public MemorySessionDAO getMemorySessionDAO(){
-        MemorySessionDAO sessionDAO = new MemorySessionDAO();
-        return sessionDAO;
-    }
 
-    //配置shiro session 的一个管理器
-    @Bean(name = "sessionManager")
-    public DefaultWebSessionManager getDefaultWebSessionManager(){
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        // 设置session过期时间
-        sessionManager.setGlobalSessionTimeout(60*60*1000);
-        // 请注意看代码
-        sessionManager.setSessionDAO(getMemorySessionDAO());
-        //解决url携带jessionid问题
-        sessionManager.setSessionIdUrlRewritingEnabled(false);
-        return sessionManager;
-    }
-
-    //
     //创建DefaultWebSecurityManager
     @Bean("securityManager")
     public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("userRealm") UserRealm userRealm){
@@ -127,7 +105,7 @@ public class ShiroConfig {
         return myShiroRealm;
     }
 
-    @Bean
+  /*  @Bean
     public DefaultSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 注入自定义的realm;
@@ -137,8 +115,28 @@ public class ShiroConfig {
         //securityManager.setCacheManager(ehCacheManager());
 
         return securityManager;
+    }*/
+
+    //禁止重复登录
+    // 配置sessionDAO
+    @Bean(name="sessionDAO")
+    public MemorySessionDAO getMemorySessionDAO(){
+        MemorySessionDAO sessionDAO = new MemorySessionDAO();
+        return sessionDAO;
     }
 
+    //配置shiro session 的一个管理器
+    @Bean(name = "sessionManager")
+    public DefaultWebSessionManager getDefaultWebSessionManager(){
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        // 设置session过期时间
+        sessionManager.setGlobalSessionTimeout(60*60*1000);
+        sessionManager.setSessionDAO(getMemorySessionDAO());
+        //解决url携带jessionid问题
+        sessionManager.setSessionIdUrlRewritingEnabled(false);
+        return sessionManager;
+    }
 
+    //
 
 }
