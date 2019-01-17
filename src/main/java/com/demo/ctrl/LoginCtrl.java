@@ -1,5 +1,7 @@
 package com.demo.ctrl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.demo.domain.Teacher;
 import com.demo.service.Inter.TeacherInter;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -20,6 +22,7 @@ public class LoginCtrl {
     @RequestMapping("/login")
     public String login( String name,String password, Model model){
         System.out.println("name"+name);
+        JSONObject jsonObject = new JSONObject();
         //使用Shrio编写认证操作
         //1.获取Subject
         Subject subject = SecurityUtils.getSubject();
@@ -29,6 +32,16 @@ public class LoginCtrl {
 
         try {
             subject.login(token);
+            //
+            Teacher user = tInter.login(token.getUsername());
+            // 在session中存放用户信息
+            subject.getSession().setAttribute("userLogin", user);
+            jsonObject.put("error", 0);
+            jsonObject.put("msg", "登录成功");
+            // 返回sessionId作为token
+            jsonObject.put("token",subject.getSession().getId());
+
+            //
             return "redirect:/test";
         } catch (UnknownAccountException e) {
             //e.printStackTrace();

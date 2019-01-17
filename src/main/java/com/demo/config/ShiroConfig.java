@@ -35,6 +35,7 @@ public class ShiroConfig {
         Map<String,String> filterMap = new LinkedHashMap<>();
         filterMap.put("/test","anon");
         filterMap.put("/login","anon");
+        filterMap.put("/loginin","anon");
         filterMap.put("/doRegister","anon");
         filterMap.put("/register","anon");
         //授权过滤器
@@ -128,7 +129,8 @@ public class ShiroConfig {
     //配置shiro session 的一个管理器
     @Bean(name = "sessionManager")
     public DefaultWebSessionManager getDefaultWebSessionManager(){
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        //DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        DefaultWebSessionManager sessionManager = new MySessionManager();
         // 设置session过期时间
         sessionManager.setGlobalSessionTimeout(60*60*1000);
         sessionManager.setSessionDAO(getMemorySessionDAO());
