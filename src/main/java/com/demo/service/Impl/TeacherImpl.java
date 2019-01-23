@@ -6,6 +6,7 @@ import com.demo.service.Inter.TeacherInter;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,8 +21,10 @@ public class TeacherImpl implements TeacherInter {
     }
 
     @Override
+    @Cacheable(value = "userinfocache",key="#userInfo.id")
     public Teacher login(String name) {
         Teacher teacher = tMapper.login(name);
+        System.out.println(teacher.getId());
         return teacher;
 
     }

@@ -2,6 +2,7 @@ package com.demo.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -64,6 +65,7 @@ public class ShiroConfig {
         securityManager.setRealm(userRealm);
         //
         securityManager.setSessionManager( getDefaultWebSessionManager() );
+        securityManager.setCacheManager(getCacheManager());
         return securityManager;
     }
     //创建Realm
@@ -129,8 +131,8 @@ public class ShiroConfig {
     //配置shiro session 的一个管理器
     @Bean(name = "sessionManager")
     public DefaultWebSessionManager getDefaultWebSessionManager(){
-        //DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        DefaultWebSessionManager sessionManager = new MySessionManager();
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        //DefaultWebSessionManager sessionManager = new MySessionManager();
         // 设置session过期时间
         sessionManager.setGlobalSessionTimeout(60*60*1000);
         sessionManager.setSessionDAO(getMemorySessionDAO());
@@ -140,5 +142,11 @@ public class ShiroConfig {
     }
 
     //
+    @Bean
+    public EhCacheManager getCacheManager(){
+        EhCacheManager ehCacheManager = new EhCacheManager();
+        //ehCacheManager.setCacheManagerConfigFile("src\\main\\resources\\shiro-ehcache.xml");
+        return ehCacheManager;
+    }
 
 }
